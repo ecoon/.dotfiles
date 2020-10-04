@@ -1,5 +1,7 @@
 export LSCOLORS="exfxcxdxbxegedabagacad"
 export CLICOLOR=true
+export EDITOR='emacsclient -n'
+export fignore=(.o \~)
 
 fpath=($ZSH/functions $fpath)
 
