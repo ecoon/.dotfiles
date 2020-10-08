@@ -1,6 +1,7 @@
-;; turn off the stupid splash screen
+;; turn off the stupid splash screen and warnings from dependent packages
 (setq inhibit-startup-screen t)
 (setq confirm-kill-emacs 'yes-or-no-p)
+(setq byte-compile-warnings '(cl-functions))
 
 ;; MELPA packages
 (require 'package)
@@ -14,6 +15,27 @@
 
 ;; org-mode
 (use-package ox-rst :ensure t)
+(use-package markdown-mode :ensure t
+  :config
+  (custom-set-variables '(markdown-command "/usr/local/bin/markdown"))
+  )
+(defun markdown-filter (buffer)
+  (princ
+   (with-temp-buffer
+     (let ((tmpname (buffer-name)))
+       (set-buffer buffer)
+       (set-buffer (markdown tmpname)) ; the function markdown is in `markdown-mode.el'
+       (buffer-string)))
+   (current-buffer)))
+(use-package impatient-mode :ensure t)
+;;
+;; NOTE: to use, in markdown file:
+;;  * M-x markdown-mode
+;;  * M-x impatient-mode
+;;  * M-x httpd-start
+;;  * M-x imp-set-user-filter RET markdown-filter RET
+;;  * open http://localhost:8080/imp
+
 
 ;; ITERM2 MOUSE SUPPORT
 (unless window-system
@@ -27,12 +49,6 @@
 (setq ispell-silently-savep t)
 (global-set-key (kbd "M-#") 'flyspell-auto-correct-word)
  
-
-
-;; customize theme
-(add-hook 'after-init-hook (lambda () (load-theme 'solarized-zenburn)))
-
-
 ;; semantic refactoring
 (use-package srefactor :ensure t)
 (global-set-key (kbd "C-x r") 'srefactor-refactor-at-point)
@@ -104,6 +120,7 @@
 (require 'spaceline-config)
 (spaceline-emacs-theme)
 
+;; navigation
 ;; project management
 (use-package projectile
   :ensure t
@@ -115,18 +132,68 @@
   (projectile-mode +1))
 
 ;; treemacs & projectile
-(use-package treemacs :ensure t)
-(setq treemacs-position 'right)
-(define-key treemacs-mode-map (kbd "M-t") 'treemacs-command-map)
-
-;; magit
-(use-package magit :ensure t)
-(global-set-key (kbd "C-x g") 'magit-status)
-(add-hook 'after-save-hook 'magit-after-save-refresh-status t)
+(use-package treemacs
+  :ensure t
+  :config
+  (setq treemacs-position 'right)
+  (define-key treemacs-mode-map (kbd "M-t") 'treemacs-command-map)
+  (global-set-key (kbd "M-p t") 'treemacs-add-and-display-current-project)
+  )
 
 ;; ivy for swiper and cleaner searching wiht regex
-(use-package ivy :ensure t)
-(use-package avy :ensure t)
+(use-package ivy
+  :ensure t
+  :config
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  (setq ivy-wrap t)
+  (setq ivy-count-format "(%d/%d) ")
+  (setq swiper-goto-start-of-match t)
+  (global-set-key (kbd "C-s") 'swiper)
+  (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  (global-set-key (kbd "<f6>") 'ivy-resume)
+)
+
+(use-package avy
+  :ensure t
+  :config
+  (avy-setup-default)
+  (global-set-key (kbd "C-;") 'avy-goto-char)
+  )
+
+(use-package counsel
+  :ensure t
+  :config
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  (global-set-key (kbd "C-c g") 'counsel-git)
+  (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  (global-set-key (kbd "C-c k") 'counsel-ag)
+  (global-set-key (kbd "C-x l") 'counsel-locate)
+  (global-set-key (kbd "C-x y") 'counsel-yank-pop)
+  (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+  (global-set-key (kbd "M-<return>") 'ivy-immediate-done)
+  (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+
+  (setq counsel-find-file-ignore-regexp
+    (concat
+     ;; File names beginning with # or .
+     "\\(?:\\`[#.]\\)"
+     ;; File names ending with # or ~
+     "\\|\\(?:\\`.+?[#~]\\'\\)")
+    )
+  )
+(use-package counsel-projectile
+  :ensure t
+  :config
+  (counsel-projectile-mode)
+  )
 
 (defun tv/swiper-backward (&optional initial-input)
   (interactive)
@@ -134,42 +201,10 @@
          '((swiper . tv/ivy-recompute-index-swiper-backward))))
     (swiper initial-input)))
 
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq enable-recursive-minibuffers t)
-(setq ivy-wrap t)
-(setq ivy-count-format "(%d/%d) ")
-(setq swiper-goto-start-of-match t)
-
-(global-set-key "\C-s" 'swiper)
-(global-set-key (kbd "C-c C-r") 'ivy-resume)
-(global-set-key (kbd "<f6>") 'ivy-resume)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-(global-set-key (kbd "C-c g") 'counsel-git)
-(global-set-key (kbd "C-c j") 'counsel-git-grep)
-(global-set-key (kbd "C-c k") 'counsel-ag)
-(global-set-key (kbd "C-x l") 'counsel-locate)
-(global-set-key (kbd "C-x y") 'counsel-yank-pop)
-(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-(global-set-key (kbd "M-<return>") 'ivy-immediate-done)
-(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-
-(setq counsel-find-file-ignore-regexp
-        (concat
-         ;; File names beginning with # or .
-         "\\(?:\\`[#.]\\)"
-         ;; File names ending with # or ~
-         "\\|\\(?:\\`.+?[#~]\\'\\)"))
-
-(avy-setup-default)
-(global-set-key (kbd "C-;") 'avy-goto-char)
-(counsel-projectile-mode)
+;; magit
+(use-package magit :ensure t)
+(global-set-key (kbd "C-x g") 'magit-status)
+(add-hook 'after-save-hook 'magit-after-save-refresh-status t)
 
 ;; tabs suck
 (setq-default indent-tabs-mode nil)
@@ -199,14 +234,12 @@
 
 (global-set-key (kbd "M-=") 'iterm-goto-filedir-or-home)
 
-
 ;; eshell customization
-(setq eshell-cmpl-cycle-completions nil)
+;;(setq eshell-cmpl-cycle-completions nil)
 
 ;; clang-format
 (load "/usr/local/Cellar/clang-format/10.0.1/share/clang/clang-format.el")
 (global-set-key [C-M-tab] 'clang-format-region)
-
 
 ;; adaptive-wrap
 (setq visual-line-fringe-indicators (quote (left-curly-arrow right-curly-arrow)))
@@ -216,9 +249,16 @@
     (adaptive-wrap-prefix-mode (if visual-line-mode 1 -1)))
   (add-hook 'visual-line-mode-hook 'my-activate-adaptive-wrap-prefix-mode))
 
-
 ;; comments are always appreciated
 (global-set-key (kbd "C-c c") 'comment-or-uncomment-region)
+
+;; emacs-client
+(server-start)
+
+;; themes
+(use-package zenburn-theme :ensure t)
+(use-package solarized-theme :ensure t)
+(add-hook 'after-init-hook (lambda () (load-theme 'solarized-zenburn)))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -230,58 +270,50 @@
  '(ansi-color-names-vector
    ["#212526" "#ff4b4b" "#b4fa70" "#fce94f" "#729fcf" "#e090d7" "#8cc4ff" "#eeeeec"])
  '(beacon-color "#d33682")
- '(compilation-message-face (quote default))
+ '(compilation-message-face 'default)
  '(cua-global-mark-cursor-color "#2aa198")
  '(cua-normal-cursor-color "#839496")
  '(cua-overwrite-cursor-color "#b58900")
  '(cua-read-only-cursor-color "#859900")
  '(custom-safe-themes
-   (quote
-    ("7575474658c34b905bcec30a725653b2138c2f2d3deef0587e3abfae08c5b276" "57e3f215bef8784157991c4957965aa31bac935aca011b29d7d8e113a652b693" "51ec7bfa54adf5fff5d466248ea6431097f5a18224788d0bd7eb1257a4f7b773" "0fffa9669425ff140ff2ae8568c7719705ef33b7a927a0ba7c5e2ffcfac09b75" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "2809bcb77ad21312897b541134981282dc455ccd7c14d74cc333b6e549b824f3" "c433c87bd4b64b8ba9890e8ed64597ea0f8eb0396f4c9a9e01bd20a04d15d358" default)))
+   '("7575474658c34b905bcec30a725653b2138c2f2d3deef0587e3abfae08c5b276" "57e3f215bef8784157991c4957965aa31bac935aca011b29d7d8e113a652b693" "51ec7bfa54adf5fff5d466248ea6431097f5a18224788d0bd7eb1257a4f7b773" "0fffa9669425ff140ff2ae8568c7719705ef33b7a927a0ba7c5e2ffcfac09b75" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "2809bcb77ad21312897b541134981282dc455ccd7c14d74cc333b6e549b824f3" "c433c87bd4b64b8ba9890e8ed64597ea0f8eb0396f4c9a9e01bd20a04d15d358" default))
  '(fci-rule-color "#073642")
- '(flycheck-color-mode-line-face-to-color (quote mode-line-buffer-id))
- '(frame-background-mode (quote dark))
- '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+ '(flycheck-color-mode-line-face-to-color 'mode-line-buffer-id)
+ '(frame-background-mode 'dark)
+ '(highlight-changes-colors '("#d33682" "#6c71c4"))
  '(highlight-symbol-colors
-   (quote
-    ("#98695021d64f" "#484f5a50ffff" "#9ae80000c352" "#00000000ffff" "#98695021d64f" "#9ae80000c352" "#484f5a50ffff")))
+   '("#98695021d64f" "#484f5a50ffff" "#9ae80000c352" "#00000000ffff" "#98695021d64f" "#9ae80000c352" "#484f5a50ffff"))
  '(highlight-symbol-foreground-color "#93a1a1")
  '(highlight-tail-colors
-   (quote
-    (("#073642" . 0)
+   '(("#073642" . 0)
      ("#5b7300" . 20)
      ("#007d76" . 30)
      ("#0061a8" . 50)
      ("#866300" . 60)
      ("#992700" . 70)
      ("#a00559" . 85)
-     ("#073642" . 100))))
+     ("#073642" . 100)))
  '(hl-bg-colors
-   (quote
-    ("#866300" "#992700" "#a7020a" "#a00559" "#243e9b" "#0061a8" "#007d76" "#5b7300")))
+   '("#866300" "#992700" "#a7020a" "#a00559" "#243e9b" "#0061a8" "#007d76" "#5b7300"))
  '(hl-fg-colors
-   (quote
-    ("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36")))
- '(hl-paren-colors (quote ("#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900")))
+   '("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36"))
+ '(hl-paren-colors '("#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900"))
  '(lsp-ui-doc-border "#93a1a1")
  '(nrepl-message-colors
-   (quote
-    ("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4")))
- '(ns-left-alternate-modifier (quote super))
+   '("#dc322f" "#cb4b16" "#b58900" "#5b7300" "#b3c34d" "#0061a8" "#2aa198" "#d33682" "#6c71c4"))
+ '(ns-left-alternate-modifier 'super)
  '(package-selected-packages
-   (quote
-    (hydra magit treemacs treemacs-all-the-icons treemacs-icons-dired treemacs-magit treemacs-persp treemacs-projectile srefactor color-theme-sanityinc-solarized color-theme-sanityinc-tomorrow solarized-theme tao-theme tangotango-theme tango-plus-theme tango-2-theme spaceline-all-the-icons projectile-codesearch ox-rst ivy-avy gh-md ggtags gandalf-theme function-args ein-mumamo dracula-theme darktooth-theme darkokai-theme darkmine-theme darkburn-theme dark-mint-theme dark-krystal-theme darcula-theme danneskjold-theme dakrone-theme dakrone-light-theme counsel-projectile counsel-osx-app counsel-gtags cmake-mode clues-theme cherry-blossom-theme challenger-deep-theme caroline-theme calmer-forest-theme bliss-theme badwolf-theme badger-theme auto-complete atom-one-dark-theme atom-dark-theme apropospriate-theme ample-zen-theme ample-theme all-the-icons-ivy-rich all-the-icons-ivy all-the-icons-ibuffer alect-themes afternoon-theme adaptive-wrap ace-window)))
+   '(markdown-mode impatient-mode hydra magit treemacs treemacs-all-the-icons treemacs-icons-dired treemacs-magit treemacs-persp treemacs-projectile srefactor color-theme-sanityinc-solarized color-theme-sanityinc-tomorrow solarized-theme tao-theme tangotango-theme tango-plus-theme tango-2-theme spaceline-all-the-icons projectile-codesearch ox-rst ivy-avy gh-md ggtags gandalf-theme function-args ein-mumamo dracula-theme darktooth-theme darkokai-theme darkmine-theme darkburn-theme dark-mint-theme dark-krystal-theme darcula-theme danneskjold-theme dakrone-theme dakrone-light-theme counsel-projectile counsel-osx-app counsel-gtags cmake-mode clues-theme cherry-blossom-theme challenger-deep-theme caroline-theme calmer-forest-theme bliss-theme badwolf-theme badger-theme auto-complete atom-one-dark-theme atom-dark-theme apropospriate-theme ample-zen-theme ample-theme all-the-icons-ivy-rich all-the-icons-ivy all-the-icons-ibuffer alect-themes afternoon-theme adaptive-wrap ace-window))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
- '(safe-local-variable-values (quote ((c-default-style . "google"))))
+ '(safe-local-variable-values '((c-default-style . "google")))
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
  '(term-default-bg-color "#002b36")
  '(term-default-fg-color "#839496")
  '(vc-annotate-background nil)
  '(vc-annotate-background-mode nil)
  '(vc-annotate-color-map
-   (quote
-    ((20 . "#dc322f")
+   '((20 . "#dc322f")
      (40 . "#cb4b16")
      (60 . "#b58900")
      (80 . "#859900")
@@ -298,11 +330,10 @@
      (300 . "#d33682")
      (320 . "#6c71c4")
      (340 . "#dc322f")
-     (360 . "#cb4b16"))))
+     (360 . "#cb4b16")))
  '(vc-annotate-very-old-color nil)
  '(weechat-color-list
-   (quote
-    (unspecified "#002b36" "#073642" "#a7020a" "#dc322f" "#5b7300" "#859900" "#866300" "#b58900" "#0061a8" "#268bd2" "#a00559" "#d33682" "#007d76" "#2aa198" "#839496" "#657b83")))
+   '(unspecified "#002b36" "#073642" "#a7020a" "#dc322f" "#5b7300" "#859900" "#866300" "#b58900" "#0061a8" "#268bd2" "#a00559" "#d33682" "#007d76" "#2aa198" "#839496" "#657b83"))
  '(xterm-color-names
    ["#073642" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#eee8d5"])
  '(xterm-color-names-bright
@@ -315,5 +346,5 @@
  )
 
 
-(global-set-key (kbd "M-p t") 'treemacs-add-and-display-current-project)
+
 

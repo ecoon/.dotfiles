@@ -1,7 +1,7 @@
 export CODE_BASE=${HOME}/code
 
 # modulefiles
-source /usr/local/Cellar/lmod/8.3.17/init/profile
+source /usr/local/opt/lmod/init/zsh
 module use -a ${CODE_BASE}/mpi/modulefiles
 module use -a ${CODE_BASE}/seacas/modulefiles
 alias moduel="module"
