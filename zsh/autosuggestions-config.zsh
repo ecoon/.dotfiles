@@ -6,16 +6,11 @@
 # Color to use when highlighting suggestion
 # Uses format of `region_highlight`
 # More info: http://zsh.sourceforge.net/Doc/Release/Zsh-Line-Editor.html#Zle-Widgets
-# (( ! ${+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE} )) &&
-# typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+(( ! ${+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE} )) &&
+typeset -g ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 
 # autosuggest colors
 #ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ff00ff,bg=cyan,bold,underline"
-
-# autosuggest bind C-<ret> to accept the suggestion and execute
-# note this works with an iterm2 key binding that maps C-<ret> to "send Escape sequence": ^[[C
-bindkey '^[[C' autosuggest-accept
-
 
 # Prefix to use when saving original versions of bound widgets
 (( ! ${+ZSH_AUTOSUGGEST_ORIGINAL_WIDGET_PREFIX} )) &&

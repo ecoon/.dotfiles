@@ -2,7 +2,7 @@
 export ZSH="$DOTFILES"
 
 # your project folder that we can `c [tab]` to
-export PROJECTS=~/code
+export PROJECTS=/Users/Shared/ornldev/code
 
 # Stash your environment variables in ~/.localrc. This means they'll stay out
 # of your main dotfiles repository (which may be public, like this one), but
@@ -62,6 +62,9 @@ bindkey "^[[B" down-line-or-beginning-search # Down
 
 # autosuggstions
 bindkey '^[[[E' autosuggest-execute
+bindkey '^[[[S' autosuggest-execute
+bindkey '^M' accept-line
+bindkey '^[/' autosuggest-accept
 
 # Notify existing users that they should migrate to another variable.
 #export ZSH='$ZSH is deprecated, use either $DOTFILES or $OHMYZSH instead.'

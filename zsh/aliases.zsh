@@ -2,7 +2,6 @@ alias reload!='. ~/.zshrc'
 
 alias rm='rm -i'
 alias et='exit'
-alias less='cless'
 alias rmold='rm -f ./*~'
 alias directory_hog='find $1 -type d | xargs du -sm | sort -g'
 
@@ -29,5 +28,21 @@ function cd() {
     builtin cd "${new_directory}" && ls
 }
 compdef _gnu_generic cd
+
+
+
+# useful functions for parsing ATS output
+function showc() {
+  grep "Cycle = ${1}" ${2} | head -n1
+}
+function lastc() {
+  grep "Cycle = " ${1} | tail -n1
+}
+
+# timediff file1 file2 shows difference, in seconds, of file2 - file1
+function timediff() {
+  echo $((`gstat --format=%Y $2` - `gstat --format=%Y $1`))
+}
+
 
 

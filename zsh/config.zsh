@@ -23,13 +23,17 @@ setopt PROMPT_SUBST
 setopt CORRECT
 setopt COMPLETE_IN_WORD
 setopt IGNORE_EOF
+unsetopt CORRECT_ALL # turn off obnoxious autocorrect
+unsetopt CORRECT # turn off obnoxious autocorrect
 
 setopt APPEND_HISTORY # adds history
-setopt INC_APPEND_HISTORY SHARE_HISTORY  # adds history incrementally and share it across sessions
+unsetopt INC_APPEND_HISTORY  # adds history incrementally (rather than on close)
+unsetopt SHARE_HISTORY # turn off history sharing across tabs
 setopt HIST_IGNORE_ALL_DUPS  # don't record dupes in history
 setopt HIST_REDUCE_BLANKS
 
 setopt RM_STAR_SILENT
+setopt +o NOMATCH
 unsetopt AUTOPUSHD
 
 # don't expand aliases _before_ completion has finished
@@ -42,3 +46,5 @@ bindkey '^[[5D' beginning-of-line
 bindkey '^[[5C' end-of-line
 bindkey '^[[3~' delete-char
 bindkey '^?' backward-delete-char
+
+export PATH=~/code/tmpi:${PATH}
