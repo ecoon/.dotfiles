@@ -1,0 +1,234 @@
+;; turn off the stupid splash screen and warnings from dependent packages
+(setq inhibit-startup-screen t)
+(setq visible-bell nil)
+(setq ring-bell-function 'ignore)
+(setq confirm-kill-emacs 'yes-or-no-p)
+(setq byte-compile-warnings '(cl-functions))
+
+;; MELPA packages
+;; (require 'package)
+;; (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+;; (package-initialize)
+;; (require 'use-package)
+
+;; misc.el zap-up-to-char
+;; (require 'misc)
+;; (global-set-key (kbd "M-z") 'zap-up-to-char)
+
+;; org-mode
+;; (use-package ox-rst :ensure t)
+;; (use-package markdown-mode :ensure t
+;;   :config
+;;   (custom-set-variables '(markdown-command "/usr/local/bin/markdown"))
+;;   )
+;; (defun markdown-filter (buffer)
+;;   (princ
+;;    (with-temp-buffer
+;;      (let ((tmpname (buffer-name)))
+;;        (set-buffer buffer)
+;;        (set-buffer (markdown tmpname)) ; the function markdown is in `markdown-mode.el'
+;;        (buffer-string)))
+;;    (current-buffer)))
+;; (use-package impatient-mode :ensure t)
+;;
+;; NOTE: to use, in markdown file:
+;;  * M-x markdown-mode
+;;  * M-x impatient-mode
+;;  * M-x httpd-start
+;;  * M-x imp-set-user-filter RET markdown-filter RET
+;;  * open http://localhost:8080/imp
+
+
+;; flyspell
+;; (setq ispell-silently-savep t)
+;; (global-set-key (kbd "M-#") 'flyspell-auto-correct-word)
+ 
+;; semantic refactoring
+;; (use-package srefactor :ensure t)
+;; (global-set-key (kbd "C-x r") 'srefactor-refactor-at-point)
+
+;; set functions to limit argument indentation after long function names
+(defconst my-c-lineup-maximum-indent 30)
+
+(defun my-c-lineup-arglist (langelem)
+  (let ((ret (c-lineup-arglist langelem)))
+    (if (< (elt ret 0) my-c-lineup-maximum-indent)
+        ret
+      (save-excursion
+        (goto-char (cdr langelem))
+        (vector (+ (current-column) 8))))))
+
+(defun my-indent-setup ()
+  (setcdr (assoc 'arglist-cont-nonempty c-offsets-alist)
+          '(c-lineup-gcc-asm-reg my-c-lineup-arglist)))
+
+;; C/ C++
+(use-package whitespace :ensure t)
+;;(setq-default whitespace-line-column 80 whitespace-style '(face lines-tail))
+
+;; hook for keyboard defines
+(defun my-c-initialization-hook ()
+  (define-key c-mode-base-map (kbd "RET") 'newline-and-indent)
+  (define-key c-mode-base-map (kbd "C-c C-c") 'comment-or-uncomment-region)
+  (define-key c-mode-base-map (kbd "C-c >") 'indent-region)
+  )
+(add-hook 'c-initialization-hook 'my-c-initialization-hook)
+
+;; style for others
+(defconst my-c-style
+  '((c-tab-always-indent        . t)
+    (c-offsets-alist            . ((arglist-close . c-lineup-arglist)
+                                   (substatement-open . 0)
+                                   (case-label        . 2)
+                                   (block-open        . 0)
+                                   (knr-argdecl-intro . -)
+                                   (innamespace       . 0))))
+  "My C Programming Style")
+(c-add-style "PERSONAL" my-c-style)
+
+;; hook for mode
+(defun my-c-mode-common-hook ()
+  (c-set-style "PERSONAL")
+  (setq c-basic-offset 2)
+  (setq fill-column 79)
+  (setq tab-width 2 indent-tabs-mode nil)
+  (c-toggle-hungry-state)
+  (setq whitespace-style '(face trailing))
+  (whitespace-mode)
+  (semantic-mode)
+  (my-indent-setup)
+  ;; (add-hook 'write-contents-functions
+  ;;     (lambda() (save-excursion (whitespace-cleanup)) nil nil))
+  )
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+;; Python
+(defun my-python-mode-hook ()
+  (setq fill-column 79)
+  (define-key c-mode-base-map (kbd "C-c C-c") 'comment-or-uncomment-region)
+  )
+(add-hook 'python-mode 'my-python-mode-hook)
+
+;; powerline
+;; (use-package spaceline :ensure t)
+;; (require 'spaceline-config)
+;; (spaceline-emacs-theme)
+
+;; navigation
+;; project management
+;; (use-package projectile
+;;   :ensure t
+;;   :config
+;;   (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
+;;   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+;;   (define-key projectile-mode-map (kbd "M-p t") 'treemacs-display-current-project-exclusively)
+;;   (setq projectile-completion-system 'ivy)
+;;   (projectile-mode +1))
+
+;; treemacs & projectile
+;; (use-package treemacs
+;;   :ensure t
+;;   :config
+;;   (setq treemacs-position 'right)
+;;   (define-key treemacs-mode-map (kbd "M-t") 'treemacs-command-map)
+;;   (global-set-key (kbd "M-p t") 'treemacs-add-and-display-current-project)
+;;   )
+
+;; ivy for swiper and cleaner searching wiht regex
+;; (use-package ivy
+;;   :ensure t
+;;   :config
+;;   (ivy-mode 1)
+;;   (setq ivy-use-virtual-buffers t)
+;;   (setq enable-recursive-minibuffers t)
+;;   (setq ivy-wrap t)
+;;   (setq ivy-count-format "(%d/%d) ")
+;;   (setq swiper-goto-start-of-match t)
+;;   (global-set-key (kbd "C-s") 'swiper)
+;;   (global-set-key (kbd "C-c C-r") 'ivy-resume)
+;;   (global-set-key (kbd "<f6>") 'ivy-resume)
+;; )
+
+;; (use-package avy
+;;   :ensure t
+;;   :config
+;;   (avy-setup-default)
+;;   (global-set-key (kbd "C-;") 'avy-goto-char)
+;;   )
+
+;; (use-package counsel
+;;   :ensure t
+;;   :config
+;;   (global-set-key (kbd "M-x") 'counsel-M-x)
+;;   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+;;   (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+;;   (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+;;   (global-set-key (kbd "<f1> l") 'counsel-find-library)
+;;   (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+;;   (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+;;   (global-set-key (kbd "C-c g") 'counsel-git)
+;;   (global-set-key (kbd "C-c j") 'counsel-git-grep)
+;;   (global-set-key (kbd "C-c k") 'counsel-ag)
+;;   (global-set-key (kbd "C-x l") 'counsel-locate)
+;;   (global-set-key (kbd "C-x y") 'counsel-yank-pop)
+;;   (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+;;   ;;(global-set-key (kbd "M-<return>") 'ivy-immediate-done) ;; cannot figure out conflict with this and ein, and I don't think I use this anyway?
+;;   (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+
+;;   (setq counsel-find-file-ignore-regexp
+;;     (concat
+;;      ;; File names beginning with # or .
+;;      "\\(?:\\`[#.]\\)"
+;;      ;; File names ending with # or ~
+;;      "\\|\\(?:\\`.+?[#~]\\'\\)")
+;;     )
+;;   )
+;; (use-package counsel-projectile
+;;   :ensure t
+;;   :config
+;;   (counsel-projectile-mode)
+;;   )
+
+;; (defun tv/swiper-backward (&optional initial-input)
+;;   (interactive)
+;;   (let ((ivy-index-functions-alist
+;;          '((swiper . tv/ivy-recompute-index-swiper-backward))))
+;;     (swiper initial-input)))
+
+;; ;; magit
+;; (use-package magit :ensure t)
+;; (global-set-key (kbd "C-x g") 'magit-status)
+;; (add-hook 'after-save-hook 'magit-after-save-refresh-status t)
+
+;; tabs suck
+(setq-default indent-tabs-mode nil)
+
+;; eshell customization
+;;(setq eshell-cmpl-cycle-completions nil)
+
+;; ;; clang-format
+;; (load "/usr/local/Cellar/clang-format/10.0.1/share/clang/clang-format.el")
+;; (global-set-key [C-M-tab] 'clang-format-region)
+
+;; adaptive-wrap
+(setq visual-line-fringe-indicators (quote (left-curly-arrow right-curly-arrow)))
+(when (fboundp 'adaptive-wrap-prefix-mode)
+  (defun my-activate-adaptive-wrap-prefix-mode ()
+    "Toggle `visual-line-mode' and `adaptive-wrap-prefix-mode' simultaneously."
+    (adaptive-wrap-prefix-mode (if visual-line-mode 1 -1)))
+  (add-hook 'visual-line-mode-hook 'my-activate-adaptive-wrap-prefix-mode))
+
+;; emacs-client
+(server-start)
+
+;; themes
+;; (use-package zenburn-theme :ensure t)
+;; (use-package solarized-theme :ensure t)
+;; (add-hook 'after-init-hook (lambda () (load-theme 'solarized-zenburn)))
+
+
+;; comments are always appreciated
+(global-set-key (kbd "C-c c") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
+
+

@@ -14,7 +14,7 @@ fi
 
 # all of our zsh files
 typeset -U config_files
-config_files=($DOTFILES/**/*.zsh)
+config_files=($DOTFILES/zsh/*.zsh)
 
 # load the path files
 for file in ${(M)config_files:#*/path.zsh}
@@ -66,6 +66,4 @@ bindkey '^[[[S' autosuggest-execute
 bindkey '^M' accept-line
 bindkey '^[/' autosuggest-accept
 
-# Notify existing users that they should migrate to another variable.
-#export ZSH='$ZSH is deprecated, use either $DOTFILES or $OHMYZSH instead.'
 

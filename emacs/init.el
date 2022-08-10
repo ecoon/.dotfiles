@@ -170,7 +170,7 @@
   (c-toggle-hungry-state)
   (setq whitespace-style '(face trailing))
   (whitespace-mode)
-  (semantic-mode)
+  ;;(semantic-mode)
   (my-indent-setup)
   ;; (add-hook 'write-contents-functions
   ;;     (lambda() (save-excursion (whitespace-cleanup)) nil nil))
@@ -298,14 +298,35 @@
 		 sgml-skip-tag-forward
 		 nil))
   )
-(add-hook 'c-mode-common-hook   'hs-minor-mode)
+;;(add-hook 'c-mode-common-hook   'hs-minor-mode)
 (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
 (add-hook 'sh-mode-hook         'hs-minor-mode)
 (add-hook 'python-mode-hook     'hs-minor-mode)
 (add-hook 'nxml-mode-hook 'hs-minor-mode)
 
+;; mmm-mode: rst in C++
+;;(add-to-list 'load-path "~/.emacs.d/mmm-mode/share/emacs/site-lisp")
+(use-package mmm-mode
+  :ensure t
+  :config
+  (setq mmm-global-mode 'maybe)
+  (setq mmm-parse-when-idle nil)
+  (mmm-add-classes
+   '((cpp-rst
+      :submode rst-mode
+      :front "/\\*!"
+      :back "\\*/"
+      :end-not-begin t)))
+  (mmm-add-mode-ext-class 'c++-mode "\\.hh\\'" 'cpp-rst)
+  (add-to-list 'mmm-save-local-variables 'fill-paragraph-function)
+  (add-to-list 'mmm-save-local-variables 'fill-paragraph-handle-comment)
+  (add-to-list 'mmm-save-local-variables 'adaptive-fill-function)
+  (add-to-list 'mmm-save-local-variables 'adaptive-fill-regexp)
+  (add-to-list 'mmm-save-local-variables 'adaptive-fill-first-line-regexp)
+  ;;  (add-to-list 'mmm-save-local-variables 'indent-line-function buffer (rst-mode)))
+)
 
-;; project management
+;; Project management
 (use-package projectile
   :ensure t
   :config
@@ -325,6 +346,21 @@
   (define-key treemacs-mode-map (kbd "M-t") 'treemacs-command-map)
   (global-set-key (kbd "M-p t") 'treemacs-add-and-display-current-project)
   )
+
+;; and perspective
+(use-package perspective
+  :ensure t
+  :bind
+  ("C-x C-b" . persp-list-buffers)         ; or use a nicer switcher, see below
+  ("C-x b" . persp-ivy-switch-buffer)         ; or use a nicer switcher, see below
+  :custom
+  (persp-mode-prefix-key (kbd "C-c C-p"))  ; pick your own prefix key here
+  :init
+  (persp-mode))
+
+(use-package persp-projectile
+  :ensure t)
+
 
 ;; ivy for swiper and cleaner searching with regex
 (use-package ivy
@@ -425,6 +461,7 @@
   )
 
 (global-set-key (kbd "M-=") 'iterm-goto-filedir-or-home)
+(global-set-key [f6] 'replace-string)
 
 ;; ATS work
 (defun fixit-hh ()
@@ -515,17 +552,14 @@
 ;; appearances
 ;; ----------------------------------------
 ;; powerline
-;; (use-package spaceline :ensure t
-;;   :config
-;;   (setq-default mode-line-format
-;;                 '("%e" mode-line-front-space mode-line-client mode-line-modified mode-line-frame-identification mode-line-buffer-identification "   "
-;;                  mode-line-position (vc-mode vc-mode) "  " mode-line-modes mode-line-misc-info mode-line-end-spaces))
-
-
+(use-package spaceline :ensure t)
 (use-package spaceline-config :ensure spaceline
   :config
-  (spaceline-helm-mode 1)
-  (spaceline-emacs-theme))
+  (spaceline-emacs-theme)
+  (spaceline-toggle-buffer-size-off)
+  (spaceline-toggle-projectile-root-off)
+  ;;(spaceline-toggle-minor-modes-off)
+)
 
 ;; themes
 (use-package zenburn-theme :ensure t)
@@ -585,11 +619,15 @@
  '(imenu-auto-rescan t)
  '(markdown-command "/usr/local/bin/markdown")
  '(package-selected-packages
-   '(hideshow whitespace nxml sgml-mode nxml-mode zenburn-theme use-package treemacs srefactor spaceline solarized-theme ox-rst markdown-mode magit impatient-mode ein counsel-projectile cmake-mode))
+   '(persp-projectile perspective hideshow whitespace nxml sgml-mode nxml-mode zenburn-theme use-package treemacs srefactor spaceline solarized-theme ox-rst markdown-mode magit impatient-mode ein counsel-projectile cmake-mode))
  '(safe-local-variable-values '((c-default-style . "google"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(line-number ((t (:background "#3F3F3F" :foreground "light green" :underline nil :weight thin)))))
+ '(line-number ((t (:background "#3F3F3F" :foreground "light green" :underline nil :weight thin))))
+ '(mode-line ((((class color) (min-colors 89)) (:inverse-video unspecified :overline "light green" :underline "#284b54" :foreground "light green" :background "#4F4F4F" :box (:line-width 1 :color "light green" :style unspecified)))))
+ '(powerline-active1 ((t (:background "#3F3F3F" :foreground "light green"))))
+ '(powerline-active2 ((t (:background "#4F4F4F" :foreground "plum2"))))
+ '(powerline-inactive1 ((t (:background "#4F4F4F" :foreground "PaleGreen4")))))
