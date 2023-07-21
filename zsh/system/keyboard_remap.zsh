@@ -16,4 +16,18 @@ hidutil property --matching '{"ProductID":0xc52b}' --set '{"UserKeyMapping":
       "HIDKeyboardModifierMappingDst":0x7000000e3}]
 }' &> /dev/null
 
+hidutil property --matching '{"ProductID":0x0002}' --set '{"UserKeyMapping":
+    [{"HIDKeyboardModifierMappingSrc":0x7000000e3,
+      "HIDKeyboardModifierMappingDst":0x7000000e2},
+     {"HIDKeyboardModifierMappingSrc":0x7000000e2,
+      "HIDKeyboardModifierMappingDst":0x7000000e3}]
+}' &> /dev/null
+
+hidutil property --matching '{"ProductID":0xc52b}' --set '{"UserKeyMapping":
+    [{"HIDKeyboardModifierMappingSrc":0x7000000e3,
+      "HIDKeyboardModifierMappingDst":0x7000000e2},
+     {"HIDKeyboardModifierMappingSrc":0x7000000e2,
+      "HIDKeyboardModifierMappingDst":0x7000000e3}]
+}' &> /dev/null
+
 

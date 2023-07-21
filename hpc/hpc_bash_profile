@@ -1,0 +1,39 @@
+export PS1='[\[\033[37m\]\u@\h\[\033[36m\] \W\[\033[0m\]]\[\033[36m\] >\[\033[0m\]'
+
+alias rm='rm -i'
+alias et='exit'
+alias e='emacsclient -n'
+alias rmold='rm -f ./*~'
+
+export SQUEUE_FORMAT="%.18i %.9P %.30j %.8u %.8a %.2t %.10M %.6D %.20R"
+alias squ="squeue -u ecoon"
+
+alias debug_knl='salloc -N 1 -C knl -q interactive -t 01:00:00'
+alias debug_haswell='salloc -N 1 -C haswell -q interactive -t 01:00:00'
+alias debug_perl='salloc --nodes 1 --qos interactive --time 00:30:00 --constraint cpu --account m3940'
+
+export ATS_BASE=/global/cfs/projectdirs/m3421/ats-new
+module use -a /global/cfs/projectdirs/m3421/ats-new/modulefiles
+export PYTHONPATH=${PYTHONPATH}:${ATS_BASE}/ats_manager
+
+# useful functions for parsing ATS output
+function showc() {
+  grep "Cycle = ${1}" ${2} | head -n1
+}
+function lastc() {
+  grep "Cycle = " ${1} | tail -n1
+}
+
+# timediff file1 file2 shows difference, in seconds, of file2 - file1
+function timediff() {
+  echo $((`stat --format=%Y $2` - `stat --format=%Y $1`))
+}
+
+# cd into scratch
+function cdscratch() {
+  if [ "${LMOD_SYSHOST}" == "perlmutter" ]; then
+    cd ${PSCRATCH}
+  else
+    cd ${SCRATCH}
+  fi
+}

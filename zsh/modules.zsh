@@ -6,9 +6,10 @@ module use -a ${CODE_BASE}/mpi/modulefiles
 module use -a ${CODE_BASE}/seacas/modulefiles
 module use -a ${CODE_BASE}/mstk/modulefiles
 module use -a ${CODE_BASE}/MATK/modulefiles
+module use -a ${CODE_BASE}/e3sm/modulefiles
 alias moduel="module"
 
 # ATS
-export ATS_BASE=${CODE_BASE}/ats
-export PYTHONPATH=${ATS_BASE}/ats_manager:${PYTHONPATH}
+export ATS_BASE=${CODE_BASE}/ats2
+export PYTHONPATH=${CODE_BASE}/ats/ats_manager:${PYTHONPATH}
 module use -a ${ATS_BASE}/modulefiles

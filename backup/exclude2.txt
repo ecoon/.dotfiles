@@ -1,0 +1,9 @@
+code/MATK
+code/kokkos
+code/miniconda3
+code/mpi
+code/mstk
+code/nalu
+code/pnetcdf
+code/seacas
+code/tmpi

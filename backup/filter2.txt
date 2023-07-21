@@ -1,0 +1,29 @@
+- /MATK
+- /kokkos
+- /miniconda3
+- /mpi
+- /mstk
+- /nalu
+- /pnetcdf
+- /seacas
+- /tmpi
+- /kokkos
+- /pnetcdf
+- /scipy
+- /unifhy
+- /watershed_workflow/data-library
+- /watershed_workflow/Docker
+- /whitebox-tools
+- /ats/amanzi-tpls
+- /ats/ats/install
+- /ats/ats/install-*
+- /ats/amanzi/install
+- /ats/amanzi/install-*
+- /ats/ats/build
+- /ats/ats/build-*
+- /ats/amanzi/build
+- /ats/amanzi/build-*
++ /ats/***
++ /***
+
+

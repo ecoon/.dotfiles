@@ -16,6 +16,10 @@
        (buffer-string)))
    (current-buffer)))
 
+(global-set-key (kbd "M-<up>") 'beginning-of-buffer)
+(global-set-key (kbd "M-<down>") 'end-of-buffer)
+(global-set-key (kbd "C-c C-w") 'whitespace-cleanup)
+
 ;; MELPA packages
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
@@ -170,7 +174,7 @@
   (c-toggle-hungry-state)
   (setq whitespace-style '(face trailing))
   (whitespace-mode)
-  ;;(semantic-mode)
+  (semantic-mode)
   (my-indent-setup)
   ;; (add-hook 'write-contents-functions
   ;;     (lambda() (save-excursion (whitespace-cleanup)) nil nil))
@@ -207,9 +211,9 @@
   )
 
 
-;; ;; semantic refactoring
-;; (use-package srefactor :ensure t)
-;; (global-set-key (kbd "C-x r") 'srefactor-refactor-at-point)
+;; semantic refactoring
+(use-package srefactor :ensure t)
+(global-set-key (kbd "C-x r") 'srefactor-refactor-at-point)
 
 
 ;;
@@ -373,8 +377,8 @@
   (setq ivy-count-format "(%d/%d) ")
   (setq swiper-goto-start-of-match t)
   (global-set-key (kbd "C-s") 'swiper)
-  (global-set-key (kbd "C-c C-r") 'ivy-resume)
-  (global-set-key (kbd "<f6>") 'ivy-resume)
+  ;; (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  ;; (global-set-key (kbd "<f6>") 'ivy-resume)
   (global-set-key (kbd "M-f") 'isearch-forward)
   (define-key isearch-mode-map "\M-f" 'isearch-repeat-forward)
   )
@@ -463,89 +467,89 @@
 (global-set-key (kbd "M-=") 'iterm-goto-filedir-or-home)
 (global-set-key [f6] 'replace-string)
 
-;; ATS work
-(defun fixit-hh ()
-  (interactive)
-  (replace-string "FieldEvaluator" "Evaluator")
-  (beginning-of-buffer)
-  (replace-string "Key request" "const Key& request")
-  (beginning-of-buffer)
-  (replace-string "HasFieldChanged" "Update")
-  (beginning-of-buffer)
-  (replace-string "EvaluateField" "Evaluate")
-  (beginning-of-buffer)
-  (replace-string "secondary_variable_field_evaluator" "EvaluatorSecondaryMonotype")
-  (beginning-of-buffer)
-  (replace-string "secondary_variables_field_evaluator" "EvaluatorSecondaryMonotype")
-  (beginning-of-buffer)
-  (replace-string "SecondaryVariablesFieldEvaluator" "EvaluatorSecondaryMonotype")
-  (beginning-of-buffer)
-  (replace-string "SecondaryVariableFieldEvaluator" "EvaluatorSecondaryMonotype")    
-  (beginning-of-buffer)
-  (replace-string "Clone() const;" "Clone() const override;")
-  (beginning-of-buffer)
-  (replace-string "results)" "results) override")
-  (beginning-of-buffer)
-  (replace-string "result)" "result) override")
-  (beginning-of-buffer)
-  (replace-string "const Teuchos::Ptr<State>& S" "const State& S")
-  (beginning-of-buffer)
-  (replace-string "Key wrt_key" "const Key& wrt_key, const Tag& wrt_tag")
-  (beginning-of-buffer)
-  (replace-string "const std::vector<Teuchos::Ptr<CompositeVector> >&" "const std::vector<CompositeVector*>&")
-  (beginning-of-buffer)
-  (replace-string "const Teuchos::Ptr<CompositeVector>&" "const std::vector<CompositeVector*>&")
-  (beginning-of-buffer)
-  (replace-string "EnsureCompatibility(const State& S)" "EnsureCompatibility(State& S) override")
-  (beginning-of-buffer)
-  (whitespace-cleanup)
-  (beginning-of-buffer)
-)
+;; ;; ATS work
+;; (defun fixit-hh ()
+;;   (interactive)
+;;   (replace-string "FieldEvaluator" "Evaluator")
+;;   (beginning-of-buffer)
+;;   (replace-string "Key request" "const Key& request")
+;;   (beginning-of-buffer)
+;;   (replace-string "HasFieldChanged" "Update")
+;;   (beginning-of-buffer)
+;;   (replace-string "EvaluateField" "Evaluate")
+;;   (beginning-of-buffer)
+;;   (replace-string "secondary_variable_field_evaluator" "EvaluatorSecondaryMonotype")
+;;   (beginning-of-buffer)
+;;   (replace-string "secondary_variables_field_evaluator" "EvaluatorSecondaryMonotype")
+;;   (beginning-of-buffer)
+;;   (replace-string "SecondaryVariablesFieldEvaluator" "EvaluatorSecondaryMonotype")
+;;   (beginning-of-buffer)
+;;   (replace-string "SecondaryVariableFieldEvaluator" "EvaluatorSecondaryMonotype")    
+;;   (beginning-of-buffer)
+;;   (replace-string "Clone() const;" "Clone() const override;")
+;;   (beginning-of-buffer)
+;;   (replace-string "results)" "results) override")
+;;   (beginning-of-buffer)
+;;   (replace-string "result)" "result) override")
+;;   (beginning-of-buffer)
+;;   (replace-string "const Teuchos::Ptr<State>& S" "const State& S")
+;;   (beginning-of-buffer)
+;;   (replace-string "Key wrt_key" "const Key& wrt_key, const Tag& wrt_tag")
+;;   (beginning-of-buffer)
+;;   (replace-string "const std::vector<Teuchos::Ptr<CompositeVector> >&" "const std::vector<CompositeVector*>&")
+;;   (beginning-of-buffer)
+;;   (replace-string "const Teuchos::Ptr<CompositeVector>&" "const std::vector<CompositeVector*>&")
+;;   (beginning-of-buffer)
+;;   (replace-string "EnsureCompatibility(const State& S)" "EnsureCompatibility(State& S) override")
+;;   (beginning-of-buffer)
+;;   (whitespace-cleanup)
+;;   (beginning-of-buffer)
+;; )
 
 
-(defun fixit-cc ()
-  (interactive)
-  (replace-string "FieldEvaluator" "Evaluator")
-  (beginning-of-buffer)
-  (replace-string "EvaluateField" "Evaluate")
-  (beginning-of-buffer)
-  (replace-string "Key request" "const Key& request")
-  (beginning-of-buffer)
-  (replace-string "HasFieldChanged" "Update")
-  (beginning-of-buffer)
-  (replace-string "UpdateField_" "Update_")
-  (beginning-of-buffer)
-  (replace-string "SecondaryVariablesFieldEvaluator" "EvaluatorSecondaryMonotype")
-  (beginning-of-buffer)
-  (replace-string "SecondaryVariableFieldEvaluator" "EvaluatorSecondaryMonotype")    
-  (beginning-of-buffer)
-  (replace-string "const Teuchos::Ptr<State>& S" "const State& S")
-  (beginning-of-buffer)
-  (replace-string "S->" "S.")
-  (beginning-of-buffer)
-  (replace-string "vo_->" "vo_.")
-  (beginning-of-buffer)
-  (replace-string "Key wrt_key" "const Key& wrt_key, const Tag& wrt_tag")
-  (beginning-of-buffer)
-  (replace-string "const std::vector<Teuchos::Ptr<CompositeVector> >&" "const std::vector<CompositeVector*>&")
-  (beginning-of-buffer)
-  (replace-string "const Teuchos::Ptr<CompositeVector>&" "const std::vector<CompositeVector*>&")
-  (beginning-of-buffer)
-  (replace-string "Keys::getDomain(my_key_)" "Keys::getDomain(my_keys_.front().first)")
-  (beginning-of-buffer)
-  (replace-string "result->" "result[0]->")
-  (beginning-of-buffer)
-  (replace-string "my_key_" "my_keys_.front().first")
-  (beginning-of-buffer)
-  (replace-string "Tag::NEXT" "my_keys_.front().second")
-  (beginning-of-buffer)
-  (replace-string "EnsureCompatibility(const State& S)" "EnsureCompatibility(State& S)")
-  (beginning-of-buffer)
-  (replace-string "S.RequireEvaluator(key)->EnsureCompatibility(S);" "S.RequireEvaluator(key).EnsureCompatibility(S);")
-  (beginning-of-buffer)
-  (whitespace-cleanup)
-  (beginning-of-buffer)
-)
+;; (defun fixit-cc ()
+;;   (interactive)
+;;   (replace-string "FieldEvaluator" "Evaluator")
+;;   (beginning-of-buffer)
+;;   (replace-string "EvaluateField" "Evaluate")
+;;   (beginning-of-buffer)
+;;   (replace-string "Key request" "const Key& request")
+;;   (beginning-of-buffer)
+;;   (replace-string "HasFieldChanged" "Update")
+;;   (beginning-of-buffer)
+;;   (replace-string "UpdateField_" "Update_")
+;;   (beginning-of-buffer)
+;;   (replace-string "SecondaryVariablesFieldEvaluator" "EvaluatorSecondaryMonotype")
+;;   (beginning-of-buffer)
+;;   (replace-string "SecondaryVariableFieldEvaluator" "EvaluatorSecondaryMonotype")    
+;;   (beginning-of-buffer)
+;;   (replace-string "const Teuchos::Ptr<State>& S" "const State& S")
+;;   (beginning-of-buffer)
+;;   (replace-string "S->" "S.")
+;;   (beginning-of-buffer)
+;;   (replace-string "vo_->" "vo_.")
+;;   (beginning-of-buffer)
+;;   (replace-string "Key wrt_key" "const Key& wrt_key, const Tag& wrt_tag")
+;;   (beginning-of-buffer)
+;;   (replace-string "const std::vector<Teuchos::Ptr<CompositeVector> >&" "const std::vector<CompositeVector*>&")
+;;   (beginning-of-buffer)
+;;   (replace-string "const Teuchos::Ptr<CompositeVector>&" "const std::vector<CompositeVector*>&")
+;;   (beginning-of-buffer)
+;;   (replace-string "Keys::getDomain(my_key_)" "Keys::getDomain(my_keys_.front().first)")
+;;   (beginning-of-buffer)
+;;   (replace-string "result->" "result[0]->")
+;;   (beginning-of-buffer)
+;;   (replace-string "my_key_" "my_keys_.front().first")
+;;   (beginning-of-buffer)
+;;   (replace-string "Tag::NEXT" "my_keys_.front().second")
+;;   (beginning-of-buffer)
+;;   (replace-string "EnsureCompatibility(const State& S)" "EnsureCompatibility(State& S)")
+;;   (beginning-of-buffer)
+;;   (replace-string "S.RequireEvaluator(key)->EnsureCompatibility(S);" "S.RequireEvaluator(key).EnsureCompatibility(S);")
+;;   (beginning-of-buffer)
+;;   (whitespace-cleanup)
+;;   (beginning-of-buffer)
+;; )
 
 
 ;;
@@ -558,7 +562,7 @@
   (spaceline-emacs-theme)
   (spaceline-toggle-buffer-size-off)
   (spaceline-toggle-projectile-root-off)
-  ;;(spaceline-toggle-minor-modes-off)
+  (spaceline-toggle-minor-modes-off)
 )
 
 ;; themes
@@ -566,34 +570,34 @@
 (use-package solarized-theme :ensure t)
 (add-hook 'after-init-hook (lambda () (load-theme 'solarized-zenburn)))
 
-;;
-;; macros
-;; --------------------------------
-(fset 'fixit-evaluator-dependencies-insert
-   (kmacro-lambda-form [?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r down return ?d ?e ?p ?e ?n ?d ?n ?e ?c ?i C-left ?\C-k ?d ?e ?p ?e ?n ?d ?e ?n ?c ?i ?e ?s ?_ ?. ?i ?n ?s ?e ?r ?t ?\( return ?K ?e ?y ?T ?a ?g ?\{ ?\C-e left left ?, ?  ?t ?a ?g ?\}] 0 "%d"))
-(global-set-key [f2] 'fixit-evaluator-dependencies-insert)
+;; ;;
+;; ;; macros
+;; ;; --------------------------------
+;; (fset 'fixit-evaluator-dependencies-insert
+;;    (kmacro-lambda-form [?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r down return ?d ?e ?p ?e ?n ?d ?n ?e ?c ?i C-left ?\C-k ?d ?e ?p ?e ?n ?d ?e ?n ?c ?i ?e ?s ?_ ?. ?i ?n ?s ?e ?r ?t ?\( return ?K ?e ?y ?T ?a ?g ?\{ ?\C-e left left ?, ?  ?t ?a ?g ?\}] 0 "%d"))
+;; (global-set-key [f2] 'fixit-evaluator-dependencies-insert)
 
-(fset 'fixit-evaluator-add-tag
-   (kmacro-lambda-form [?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r ?  down return ?d ?o ?m ?a ?i ?n ?_ ?n ?a ?m ?e ?  ?= ?  return down ?\C-a return up ?\C-a down ?\C-k up tab ?T ?a ?g ?  ?t ?a ?g ?  ?= ?  ?m ?y ?_ ?k ?e ?y ?s ?_ ?. ?f ?r ?o ?n ?t ?\( ?\) ?. ?s ?e ?c ?o ?n ?d ?\; return ?\C-a ?\C-k return] 0 "%d"))
-(global-set-key [f3] 'fixit-evaluator-add-tag)
+;; (fset 'fixit-evaluator-add-tag
+;;    (kmacro-lambda-form [?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r ?  down return ?d ?o ?m ?a ?i ?n ?_ ?n ?a ?m ?e ?  ?= ?  return down ?\C-a return up ?\C-a down ?\C-k up tab ?T ?a ?g ?  ?t ?a ?g ?  ?= ?  ?m ?y ?_ ?k ?e ?y ?s ?_ ?. ?f ?r ?o ?n ?t ?\( ?\) ?. ?s ?e ?c ?o ?n ?d ?\; return ?\C-a ?\C-k return] 0 "%d"))
+;; (global-set-key [f3] 'fixit-evaluator-add-tag)
 
-(fset 'fixit-use-readkey
-   (kmacro-lambda-form [?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r ?w ?a ?r ?d return ?k ?e ?y ?_ ?  ?= ?  ?p ?l ?i ?s ?t ?_ backspace return C-left ?K ?e ?y ?s ?: ?: ?r ?e ?a ?d ?K ?e ?y ?\( C-right right ?, ?  ?d ?o ?m ?a ?i ?n ?_ ?n ?a ?m ?e ?, ?  ?\C-  ?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r down return ?\" return left C-backspace C-backspace C-backspace backspace] 0 "%d"))
-(global-set-key [f1] 'fixit-use-readKey)
+;; (fset 'fixit-use-readkey
+;;    (kmacro-lambda-form [?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r ?w ?a ?r ?d return ?k ?e ?y ?_ ?  ?= ?  ?p ?l ?i ?s ?t ?_ backspace return C-left ?K ?e ?y ?s ?: ?: ?r ?e ?a ?d ?K ?e ?y ?\( C-right right ?, ?  ?d ?o ?m ?a ?i ?n ?_ ?n ?a ?m ?e ?, ?  ?\C-  ?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r down return ?\" return left C-backspace C-backspace C-backspace backspace] 0 "%d"))
+;; (global-set-key [f1] 'fixit-use-readKey)
 
-(fset 'fixit-add-tag
-   (kmacro-lambda-form [tab ?T ?a ?g ?  ?t ?a ?g ?  ?= ?  ?k backspace ?m ?y ?_ ?k ?e ?y ?s ?_ ?. ?f ?r ?o ?n ?t ?\( ?\) ?. ?s ?e ?c ?o ?n ?d ?\; return] 0 "%d"))
-(fset 'fixit-override
-   (kmacro-lambda-form [?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r down return ?\( backspace ?\; return left ?  ?o ?v ?e ?r ?l ?o ?a ?d backspace backspace backspace backspace ?r ?i ?d ?e] 0 "%d"))
-(fset 'fixit-remove-arg
-   (kmacro-lambda-form [?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r down return ?\( return ?\C-  ?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r return ?\) return left ?\C-w] 0 "%d"))
-(fset 'fixit-return-after-wrt_tag
-   (kmacro-lambda-form [?\M-x ?s ?e ?a ?r ?h ?c ?  ?f ?o ?r backspace C-backspace backspace backspace backspace ?c ?h ?  ?f ?o ?r down return ?w ?r ?t ?_ ?t ?a ?g return right return ?\C-x ?\C-s] 0 "%d"))
-(fset 'fixit-default-copy-constructor
-   (kmacro-lambda-form [?\M-< ?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r down return ?o ?t ?h ?e ?r return ?\C-e backspace ?  ?d ?e ?f ?u ?a ?l backspace backspace backspace ?a ?u ?l ?t ?\; C-left ?= ?  ?\C-x ?\C-s] 0 "%d"))
+;; (fset 'fixit-add-tag
+;;    (kmacro-lambda-form [tab ?T ?a ?g ?  ?t ?a ?g ?  ?= ?  ?k backspace ?m ?y ?_ ?k ?e ?y ?s ?_ ?. ?f ?r ?o ?n ?t ?\( ?\) ?. ?s ?e ?c ?o ?n ?d ?\; return] 0 "%d"))
+;; (fset 'fixit-override
+;;    (kmacro-lambda-form [?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r down return ?\( backspace ?\; return left ?  ?o ?v ?e ?r ?l ?o ?a ?d backspace backspace backspace backspace ?r ?i ?d ?e] 0 "%d"))
+;; (fset 'fixit-remove-arg
+;;    (kmacro-lambda-form [?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r down return ?\( return ?\C-  ?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r return ?\) return left ?\C-w] 0 "%d"))
+;; (fset 'fixit-return-after-wrt_tag
+;;    (kmacro-lambda-form [?\M-x ?s ?e ?a ?r ?h ?c ?  ?f ?o ?r backspace C-backspace backspace backspace backspace ?c ?h ?  ?f ?o ?r down return ?w ?r ?t ?_ ?t ?a ?g return right return ?\C-x ?\C-s] 0 "%d"))
+;; (fset 'fixit-default-copy-constructor
+;;    (kmacro-lambda-form [?\M-< ?\M-x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r down return ?o ?t ?h ?e ?r return ?\C-e backspace ?  ?d ?e ?f ?u ?a ?l backspace backspace backspace ?a ?u ?l ?t ?\; C-left ?= ?  ?\C-x ?\C-s] 0 "%d"))
 
-(fset 'manning-boundary-face
-   (kmacro-lambda-form [?\C-\[ ?x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r ?\C-m ?m ?a ?n ?n ?i ?n ?g ?\C-m ?\C-\[ ?x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r ?\C-\[ ?O ?B ?\C-m ?b ?o ?u ?n ?d ?a ?r ?y ?_ ?f ?a ?c ?e ?\C-m ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-x ?\C-s ?\C-x ?\C-f ?d ?o ?w ?n ?  ?p ?i ?\C-m] 0 "%d"))
+;; (fset 'manning-boundary-face
+;;    (kmacro-lambda-form [?\C-\[ ?x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r ?\C-m ?m ?a ?n ?n ?i ?n ?g ?\C-m ?\C-\[ ?x ?s ?e ?a ?r ?c ?h ?  ?f ?o ?r ?\C-\[ ?O ?B ?\C-m ?b ?o ?u ?n ?d ?a ?r ?y ?_ ?f ?a ?c ?e ?\C-m ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-? ?\C-x ?\C-s ?\C-x ?\C-f ?d ?o ?w ?n ?  ?p ?i ?\C-m] 0 "%d"))
 
 
 ;; emacs-client
@@ -609,18 +613,7 @@
                                 (other-window -1)))
 
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("51ec7bfa54adf5fff5d466248ea6431097f5a18224788d0bd7eb1257a4f7b773" default))
- '(imenu-auto-rescan t)
- '(markdown-command "/usr/local/bin/markdown")
- '(package-selected-packages
-   '(persp-projectile perspective hideshow whitespace nxml sgml-mode nxml-mode zenburn-theme use-package treemacs srefactor spaceline solarized-theme ox-rst markdown-mode magit impatient-mode ein counsel-projectile cmake-mode))
- '(safe-local-variable-values '((c-default-style . "google"))))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -631,3 +624,13 @@
  '(powerline-active1 ((t (:background "#3F3F3F" :foreground "light green"))))
  '(powerline-active2 ((t (:background "#4F4F4F" :foreground "plum2"))))
  '(powerline-inactive1 ((t (:background "#4F4F4F" :foreground "PaleGreen4")))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c" "3e200d49451ec4b8baa068c989e7fba2a97646091fd555eca0ee5a1386d56077" "51ec7bfa54adf5fff5d466248ea6431097f5a18224788d0bd7eb1257a4f7b773" default))
+ '(markdown-command "/usr/local/bin/markdown")
+ '(package-selected-packages
+   '(zenburn-theme use-package treemacs srefactor spaceline solarized-theme persp-projectile ox-rst mmm-mode markdown-mode magit impatient-mode ein dockerfile-mode counsel-projectile cmake-mode)))

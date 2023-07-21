@@ -13,7 +13,10 @@ alias scpout='scp -o "ProxyCommand=corkscrew snowman.ornl.gov 3128 %h %p"'
 alias rsyncout='rsync -e "sshout"'
 
 alias e='emacsclient -n'
+alias enw='emacs -nw -q -l ~/.emacs.d/init-fast.el'
 alias mkd='take'
+
+alias diff='colordiff'
 
 function findsrc() {
     find $1 -name \*.hh -print -o -name \*.cc -print
