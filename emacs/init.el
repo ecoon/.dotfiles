@@ -7,6 +7,7 @@
 (setq confirm-kill-emacs 'yes-or-no-p)
 (setq byte-compile-warnings '(cl-functions))
 (setq-default indent-tabs-mode nil)
+
 (defun markdown-filter (buffer)
   (princ
    (with-temp-buffer
@@ -29,6 +30,10 @@
 ;; misc.el zap-up-to-char
 (require 'misc)
 (global-set-key (kbd "M-z") 'zap-up-to-char)
+
+;; which-key to figure out keyboard shortcuts
+(use-package which-key :ensure t)
+(which-key-mode)
 
 ;; org-mode
 (use-package ox-rst :ensure t)
@@ -101,17 +106,6 @@
   (autoload 'sgml-skip-tag-backward "sgml-mode" nil t)
   (autoload 'sgml-skip-tag-forward "sgml-mode" nil t))
 
-(defun html-jump(&optional num)
-  "Jump forward from html open tag"
-  (interactive "P")
-  (unless num (setq num 1))
-  ;; web-mode-forward-sexp is assigned to forward-sexp-function
-  ;; it's buggy in web-mode v11, here is the workaround
-  (let ((backup-forward-sexp-function forward-sexp-function))
-    (if (= (html-get-tag) 0)
-        (sgml-skip-tag-forward num)
-      (sgml-skip-tag-backward num))))
-
 (use-package nxml
   :ensure t
   :mode (("\\.xml$" . nxml-mode)
@@ -121,7 +115,8 @@
 
   )
 (defun my-nxml-mode-hook ()
-  (local-set-key (kbd "M-'") 'html-jump)
+  (local-set-key (kbd "M-<down>") 'nxml-forward-element)
+  (local-set-key (kbd "M-<up>") 'nxml-backward-element)
   )
 (add-hook 'nxml-mode-hook 'my-nxml-mode-hook)
 
@@ -184,31 +179,32 @@
 ;;
 ;; Python
 ;;
+(setq python-shell-unbuffered nil) ;; fixes bug in python hanging everything?
 (defun my-python-mode-hook ()
-  (setq fill-column 79)
+  (setq fill-column 119)
   (local-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
   )
 (add-hook 'python-mode 'my-python-mode-hook)
 
-;; emacs ipython notebook
-(use-package ein
-  :ensure t
-  :init
-  (progn
-    (defun setup-key-hack ()
-      ;; changing keybinding
-      (define-key ein:notebook-mode-map (kbd "C-x C-s") #'ein:notebook-save-notebook-command)
-      (define-key ein:notebook-mode-map (kbd "C-<return>") #'ein:worksheet-execute-cell-and-goto-next-km)
-      (define-key ein:notebook-mode-map (kbd "M-<return>") #'ein:worksheet-execute-cell-and-goto-next-km)
-      (define-key ein:notebook-mode-map (kbd "S-<return>") #'ein:worksheet-execute-cell-and-goto-next-km)
-      (define-key ein:notebook-mode-map (kbd "C-<up>") #'backward-paragraph)
-      (define-key ein:notebook-mode-map (kbd "C-<down>") #'forward-paragraph)
-      (define-key ein:notebook-mode-map (kbd "M-<up>") #'ein:worksheet-goto-prev-input-km)
-      (define-key ein:notebook-mode-map (kbd "M-<down>") #'ein:worksheet-goto-next-input-km)
-      )
-    (add-hook 'ein:notebooklist-mode-hook #'setup-key-hack)
-    )
-  )
+;; ;; emacs ipython notebook
+;; (use-package ein
+;;   :ensure t
+;;   :init
+;;   (progn
+;;     (defun setup-key-hack ()
+;;       ;; changing keybinding
+;;       (define-key ein:notebook-mode-map (kbd "C-x C-s") #'ein:notebook-save-notebook-command)
+;;       (define-key ein:notebook-mode-map (kbd "C-<return>") #'ein:worksheet-execute-cell-and-goto-next-km)
+;;       (define-key ein:notebook-mode-map (kbd "M-<return>") #'ein:worksheet-execute-cell-and-goto-next-km)
+;;       (define-key ein:notebook-mode-map (kbd "S-<return>") #'ein:worksheet-execute-cell-and-goto-next-km)
+;;       (define-key ein:notebook-mode-map (kbd "C-<up>") #'backward-paragraph)
+;;       (define-key ein:notebook-mode-map (kbd "C-<down>") #'forward-paragraph)
+;;       (define-key ein:notebook-mode-map (kbd "M-<up>") #'ein:worksheet-goto-prev-input-km)
+;;       (define-key ein:notebook-mode-map (kbd "M-<down>") #'ein:worksheet-goto-next-input-km)
+;;       )
+;;     (add-hook 'ein:notebooklist-mode-hook #'setup-key-hack)
+;;     )
+;;   )
 
 
 ;; semantic refactoring
@@ -305,7 +301,7 @@
 ;;(add-hook 'c-mode-common-hook   'hs-minor-mode)
 (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
 (add-hook 'sh-mode-hook         'hs-minor-mode)
-(add-hook 'python-mode-hook     'hs-minor-mode)
+;;(add-hook 'python-mode-hook     'hs-minor-mode)
 (add-hook 'nxml-mode-hook 'hs-minor-mode)
 
 ;; mmm-mode: rst in C++
@@ -613,7 +609,6 @@
                                 (other-window -1)))
 
 
-
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -630,7 +625,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c" "3e200d49451ec4b8baa068c989e7fba2a97646091fd555eca0ee5a1386d56077" "51ec7bfa54adf5fff5d466248ea6431097f5a18224788d0bd7eb1257a4f7b773" default))
+   '("d89e15a34261019eec9072575d8a924185c27d3da64899905f8548cbd9491a36" "fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c" "3e200d49451ec4b8baa068c989e7fba2a97646091fd555eca0ee5a1386d56077" "51ec7bfa54adf5fff5d466248ea6431097f5a18224788d0bd7eb1257a4f7b773" default))
  '(markdown-command "/usr/local/bin/markdown")
  '(package-selected-packages
    '(zenburn-theme use-package treemacs srefactor spaceline solarized-theme persp-projectile ox-rst mmm-mode markdown-mode magit impatient-mode ein dockerfile-mode counsel-projectile cmake-mode)))

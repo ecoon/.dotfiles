@@ -50,6 +50,8 @@
 * install zsh:  `chsh -s /bin/zsh`
 * install oh-my-zsh: `sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
 * install powerline10k: `git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k`  (Note p10k.zsh included in dotfiles)
+* install autosuggestions: `git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions`
+
 
 * download and install dotfiles: `git clone https://github.com/ecoon/.dotfiles ~/.dotfiles && cd ~/.dotfiles && scripts/bootstrap`  (Note this installs homebrew, overwrites .zshrc)
 

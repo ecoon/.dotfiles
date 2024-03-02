@@ -45,5 +45,8 @@ bindkey '^[^[[C' forward-word
 bindkey '^[[5D' beginning-of-line
 bindkey '^[[5C' end-of-line
 bindkey '^[[3~' delete-char
-bindkey '^?' backward-delete-char
 
+# ORNL pem files
+# export REQUESTS_CA_BUNDLE=/Library/Application\ Support/Netskope/STAgent/data/nscacert.pem
+# export SSL_CERT_DIR=/Library/Application\ Support/Netskope/STAgent/data/
+# export SSL_CERT_FILE=/Library/Application\ Support/Netskope/STAgent/data/nscacert.pem

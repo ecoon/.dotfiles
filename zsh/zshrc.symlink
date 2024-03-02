@@ -71,11 +71,14 @@ ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git
+        github
+        brew
         colorize
         macos
         zsh-autosuggestions
         common-aliases
 )
+
 
 source $ZSH/oh-my-zsh.sh
 
@@ -89,3 +92,9 @@ source $DOTFILES/zsh/zshrc_custom
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+
+
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/uec/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)

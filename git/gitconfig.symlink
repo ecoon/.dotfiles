@@ -52,7 +52,7 @@
 
 [merge]
 	tool=ediff
-	conflictStyle = merge # diff3
+	conflictStyle = zdiff3 # merge, diff3, zdiff3
 
 [mergetool.ediff]
     cmd = emacs --eval \"\
@@ -81,6 +81,8 @@
         #
         # Setting to git 2.0 default to suppress warning message
         default = simple
+	autoSetupRemote = True
+	recurseSubmodules = check
 
 [credential]
 	helper = osxkeychain
